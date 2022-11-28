@@ -134,7 +134,7 @@ public class Form extends AppCompatActivity {
                                             Log.w("Firestore", "Error writing document", e);
                                         }
                                     });
-                            Toast.makeText(Form.this, data, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(Form.this, data, Toast.LENGTH_SHORT).show();
                             Intent i=new Intent();
                             setResult(RESULT_OK, i);
                             finish();
@@ -147,7 +147,7 @@ public class Form extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Form.this, error.getMessage().toString(), Toast.LENGTH_LONG);
+//                        Toast.makeText(Form.this, error.getMessage().toString(), Toast.LENGTH_LONG);
                     }
                 }) {
 
