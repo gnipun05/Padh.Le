@@ -1,9 +1,11 @@
 package com.example.project;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -27,6 +29,7 @@ public class SplashScreen extends AppCompatActivity {
         tv.startAnimation(myanimation);
 
         handler.postDelayed(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void run() {
                 Log.d("animate","1");
                 Intent intent = new Intent(getBaseContext(), MainActivity.class);

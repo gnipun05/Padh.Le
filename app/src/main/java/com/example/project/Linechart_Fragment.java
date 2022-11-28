@@ -26,6 +26,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,8 +36,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class Linechart_Fragment extends Fragment {
@@ -85,72 +88,156 @@ public class Linechart_Fragment extends Fragment {
 
         //lineChart.getAxisLeft().setAxisMinimum(-2);
 
-
-        lineEntry.add(new Entry(0, 0f));
-        lineEntry.add(new Entry(1, 8.5f));
-        lineEntry.add(new Entry(2, 0));
-        lineEntry.add(new Entry(3, 7));
-        lineEntry.add(new Entry(4, 0));
-        lineEntry.add(new Entry(5, 3));
-        lineEntry.add(new Entry(6, 0));
-        db.collection("users").document(user.getUid()).collection("Completed").document(date.toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//
+//        lineEntry.add(new Entry(0, 0));
+//        lineEntry.add(new Entry(1, 0));
+//        lineEntry.add(new Entry(2, 0));
+//        lineEntry.add(new Entry(3, 0));
+//        lineEntry.add(new Entry(4, 0));
+//        lineEntry.add(new Entry(5, 0));
+        db.collection("users").document(user.getUid()).collection("Completed").document(date.minus(Period.ofDays(6)).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Log.d("date", "Document exists!");
-                        db.collection("users").document(user.getUid()).collection("Completed")
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                Log.d("Hello", document.getId() + " => " + document.getData().toString());
-                                            }
-                                        } else {
-                                            Log.d("TAG", "Error getting documents: ", task.getException());
-                                        }
-                                    }
-
-                                });
+                        LineHelper lh = document.toObject(LineHelper.class);
+                        lineEntry.add(new Entry(0, lh.getCompletedTasks()));
                     } else {
                         Log.d("date", "Document does not exist!");
+                        lineEntry.add(new Entry(0, 0));
                     }
-                } else {
-                    Log.d("date", "Failed with: ", task.getException());
                 }
-            }
-        });
-        LineDataSet lds = new LineDataSet(lineEntry, "");
-        Description desc = new Description();
-        desc.setText("");
-        lineChart.setDescription(desc);
+            }});
 
-        lds.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        lds.setLineWidth(4);
-        lds.setDrawValues(false);
 
-        lds.setColor(Color.argb(255,200,128,255));
-        LineData ld = new LineData(lds);
+        db.collection("users").document(user.getUid()).collection("Completed").document(date.minus(Period.ofDays(5)).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        LineHelper lh = document.toObject(LineHelper.class);
+                        lineEntry.add(new Entry(1, lh.getCompletedTasks()));
+                    } else {
+                        Log.d("date", "Document does not exist!");
+                        lineEntry.add(new Entry(1, 0));
+                    }
 
-        lineChart.setExtraOffsets(35f, 35f, 35f, 35f);
-        lineChart.setData(ld);
+                db.collection("users").document(user.getUid()).collection("Completed").document(date.minus(Period.ofDays(4)).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    LineHelper lh = document.toObject(LineHelper.class);
+                                    lineEntry.add(new Entry(2, lh.getCompletedTasks()));
+                                } else {
+                                    Log.d("date", "Document does not exist!");
+                                    lineEntry.add(new Entry(2, 0));
+                                }
 
-        XAxis xAxis = lineChart.getXAxis();
-        xAxis.setGranularity(1f);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            db.collection("users").document(user.getUid()).collection("Completed").document(date.minus(Period.ofDays(3)).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            LineHelper lh = document.toObject(LineHelper.class);
+                            lineEntry.add(new Entry(3, lh.getCompletedTasks()));
+                        } else {
+                            Log.d("date", "Document does not exist!");
+                            lineEntry.add(new Entry(3, 0));
+                        }
 
-        lineChart.getAxisLeft().setDrawAxisLine(false);
-        lineChart.getAxisRight().setDrawAxisLine(false);
-        lineChart.getAxisRight().setEnabled(false);
+            db.collection("users").document(user.getUid()).collection("Completed").document(date.minus(Period.ofDays(2)).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            LineHelper lh = document.toObject(LineHelper.class);
+                            lineEntry.add(new Entry(4, lh.getCompletedTasks()));
+                        } else {
+                            Log.d("date", "Document does not exist!");
+                            lineEntry.add(new Entry(4, 0));
+                        }
 
-        lineChart.animateXY(1000, 1000, Easing.EaseOutBack);
-        YAxis yAxis = lineChart.getAxisLeft();
-        lineChart.setPinchZoom(true);
-        lineChart.invalidate();
+            db.collection("users").document(user.getUid()).collection("Completed").document(date.minus(Period.ofDays(1)).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            LineHelper lh = document.toObject(LineHelper.class);
+                            lineEntry.add(new Entry(5, lh.getCompletedTasks()));
+                        } else {
+                            Log.d("date", "Document does not exist!");
+                            lineEntry.add(new Entry(5, 0));
+                        }
+
+
+            db.collection("users").document(user.getUid()).collection("Completed").document(date.toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+
+
+                        //
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            LineHelper lh = document.toObject(LineHelper.class);
+                            lineEntry.add(new Entry(6, lh.getCompletedTasks()));
+                        } else {
+                            Log.d("date", "Document does not exist!");
+                            lineEntry.add(new Entry(6, 0));
+                        }
+                        //
+                        LineDataSet lds = new LineDataSet(lineEntry, "");
+                        Description desc = new Description();
+                        desc.setText("");
+                        lineChart.setDescription(desc);
+
+                        lds.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+                        lds.setLineWidth(4);
+                        lds.setDrawValues(false);
+
+                        lds.setColor(Color.argb(255,200,128,255));
+                        LineData ld = new LineData(lds);
+
+                        lineChart.setExtraOffsets(35f, 35f, 35f, 35f);
+                        lineChart.setData(ld);
+
+                        XAxis xAxis = lineChart.getXAxis();
+                        xAxis.setGranularity(1f);
+                        xAxis.setDrawGridLines(false);
+                        xAxis.setDrawAxisLine(false);
+                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+                        lineChart.getAxisLeft().setDrawAxisLine(false);
+                        lineChart.getAxisRight().setDrawAxisLine(false);
+                        lineChart.getAxisRight().setEnabled(false);
+
+                        lineChart.animateXY(1000, 1000, Easing.EaseOutBack);
+                        YAxis yAxis = lineChart.getAxisLeft();
+                        lineChart.setPinchZoom(true);
+                        lineChart.invalidate();
+
+
+                    } else {
+                        Log.d("date", "Failed with: ", task.getException());
+                    }
+
+            }});
+                }
+            }});
+                }
+            }});
+                }
+            }});
+                }
+            }});
+                }
+            }});
     }
 }

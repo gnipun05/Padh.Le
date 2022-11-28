@@ -10,6 +10,23 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/endsession"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:elevation="10dp"
+        android:src="@drawable/logout"
+        app:backgroundTint="@color/white"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.918"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.905"
+        app:tint="@color/black" />
+
     <Button
         android:id="@+id/reload"
         android:layout_width="30dp"

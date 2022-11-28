@@ -2,9 +2,11 @@ package com.example.project;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -28,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +54,7 @@ public class Piechart_Fragment extends Fragment {
         db.collection("users").document(user.getUid()).collection("Tasks")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -58,7 +62,7 @@ public class Piechart_Fragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Task tt=document.toObject(Task.class);
 //                                Log.d("bhavya", String.valueOf(tt.getTime()));
-                                if(tt.getTime()!=0)
+                                if(tt.getTime()!=0 &&tt.getDate().equals(LocalDate.now().toString()))
                                     map_pc.put(tt.getName(), tt.getTime());
 
                             }

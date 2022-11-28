@@ -159,7 +159,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document!=null) {
-                                Log.d("date28", "Document exists!");
+                                Log.d("date28", "Document not exists!");
                                 Intent i=new Intent(LoginRegisterActivity.this,Form.class);
                                 startActivity(i);
 
@@ -170,7 +170,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
                                 finish();
 
                             } else {
-                                Log.d("date28", "Document does not exist!");
+                                Log.d("date28", "Document exist!");
                             }
                         } else {
                             Log.d("date", "Failed with: ", task.getException());
