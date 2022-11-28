@@ -381,6 +381,7 @@ public class FirstFragment extends Fragment {
     public void Predict() {
 //        tagUpdate();
 
+
         db.collection("users").document(user.getUid()).collection("Details")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -389,6 +390,7 @@ public class FirstFragment extends Fragment {
                         if (task.isSuccessful()) {
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
+
                                 DetailCard dd=document.toObject(DetailCard.class);
                                 Log.d("firebasecate",dd.getCategory());
                                 String cat=dd.getCategory();

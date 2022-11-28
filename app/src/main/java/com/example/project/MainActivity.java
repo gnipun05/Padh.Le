@@ -15,6 +15,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -33,6 +40,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.os.Handler;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -53,6 +65,67 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frag_no = 1;
+//
+//        Log.d("tag203","i m here too");
+//        DocumentReference docRef2 = db.collection("users").document(user.getUid());
+//
+//        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//        @Override
+//        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//            if (task.isSuccessful()) {
+//                DocumentSnapshot document = task.getResult();
+//                if (document.exists()) {
+//                    Log.d("userInfo", "DocumentSnapshot data: " + document.getData());
+//
+//                } else {
+//                    Log.d("userInfo", "No such document");
+//                }
+//            }
+//        }
+//    });
+
+
+//
+//        db.collection("users").document(user.getUid()).collection("Tasks")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                Log.d("tag203", String.valueOf(document.getData()));
+//                            }
+//
+//                        } else {
+//                            Log.d("tag203", "Error getting documents: ", task.getException());
+//                        }
+//                    }
+//                });
+
+//        try{
+//
+//            db.collection("users").document(user.getUid()).collection("Details")
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                    DetailCard dd=document.toObject(DetailCard.class);
+//                                    Log.d("tag205",dd.getUid());
+//                                } }else {
+//                                Log.d("TAG", "Error getting documents: ", task.getException());
+//                            }
+//
+//                        }});
+//
+//        } catch (Exception e) {
+//            Log.d("tag205","boo");
+//            e.printStackTrace();
+//        }
+
+
 //        tv=findViewById(R.id.textView);
 //        Handler handler = new Handler();
 //        Animation myanimation= AnimationUtils.loadAnimation(MainActivity.this,R.anim.textaniimation);
@@ -76,23 +149,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         //firestore
         ///////////////////////////  Form /////////////////////////
-//        db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//                    if (document.exists()) {
-//                        Log.d("date28", "Document exists!");
-//                        Intent i=new Intent(MainActivity.this,Form.class);
-//                        startActivityForResult(i,30);
-//                    } else {
-//                        Log.d("date28", "Document does not exist!");
-//                    }
-//                } else {
-//                    Log.d("date", "Failed with: ", task.getException());
-//                }
-//            }
-//        });
+
         ///////////////////////////////////////////////
 
 
@@ -161,29 +218,32 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 30 && resultCode == RESULT_OK) {
-            Log.d("CatTAG", "onActivityResult: " + category);
-            category = data.getStringExtra("category");
 
-            Log.d("TAG", "onCreate: ");
-            Map<String, Object> details = new HashMap<>();
-            details.put("Name", user.getDisplayName());
-            details.put("Email", user.getEmail());
-            details.put("Uid", user.getUid());
-            details.put("Category", category);
-            db.collection("users").document(user.getUid()).collection("Details").document(user.getUid())
-                    .set(details)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("Firestore", "DocumentSnapshot successfully written!");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w("Firestore", "Error writing document", e);
-                        }
-                    });
+//
+//
+//            Log.d("CatTAG", "onActivityResult: " + category);
+//            category = data.getStringExtra("category");
+//
+//            Log.d("TAG", "onCreate: ");
+//            Map<String, Object> details = new HashMap<>();
+//            details.put("Name", user.getDisplayName());
+//            details.put("Email", user.getEmail());
+//            details.put("Uid", user.getUid());
+//            details.put("Category", category);
+//            db.collection("users").document(user.getUid()).collection("Details").document(user.getUid())
+//                    .set(details)
+//                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Log.d("Firestore", "DocumentSnapshot successfully written!");
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Log.w("Firestore", "Error writing document", e);
+//                        }
+//                    });
         }
     }
 }
