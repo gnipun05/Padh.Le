@@ -57,8 +57,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     static String myFriend;
     static int frag_no;
     String category;
-    private static int Splash_timeout=5000;
-    TextView tv;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {

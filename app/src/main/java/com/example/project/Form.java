@@ -82,6 +82,11 @@ public class Form extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+    }
+
     public void Predict() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
