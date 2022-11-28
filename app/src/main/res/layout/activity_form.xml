@@ -184,32 +184,32 @@
 
                 <RadioGroup
                     android:id="@+id/q3"
-                    android:layout_width="172dp"
-                    android:layout_height="48dp"
+                    android:layout_width="141dp"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="0dp"
                     android:orientation="horizontal"
                     android:textAlignment="center">
 
                     <RadioButton
                         android:id="@+id/q3_1"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="27dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="1" />
 
                     <RadioButton
                         android:id="@+id/q3_2"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="28dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="2" />
 
                     <RadioButton
                         android:id="@+id/q3_3"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="29dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:checked="true"
@@ -217,16 +217,16 @@
 
                     <RadioButton
                         android:id="@+id/q3_4"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="28dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="4" />
 
                     <RadioButton
                         android:id="@+id/q3_5"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="28dp"
+                        android:layout_height="match_parent"
                         android:buttonTint="#7A7777"
                         android:contentDescription="5" />
 
@@ -256,8 +256,8 @@
                 android:text="How often do you go out with your friends ?" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="312dp"
+                android:layout_height="52dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:orientation="horizontal">
@@ -272,8 +272,8 @@
 
                 <RadioGroup
                     android:id="@+id/q4"
-                    android:layout_width="172dp"
-                    android:layout_height="48dp"
+                    android:layout_width="151dp"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="0dp"
                     android:orientation="horizontal"
                     android:textAlignment="center">
@@ -288,16 +288,16 @@
 
                     <RadioButton
                         android:id="@+id/q4_2"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="29dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="2" />
 
                     <RadioButton
                         android:id="@+id/q4_3"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="29dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:checked="true"
@@ -305,16 +305,16 @@
 
                     <RadioButton
                         android:id="@+id/q4_4"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="29dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="4" />
 
                     <RadioButton
                         android:id="@+id/q4_5"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="28dp"
+                        android:layout_height="match_parent"
                         android:buttonTint="#7A7777"
                         android:contentDescription="5" />
 
@@ -345,8 +345,8 @@
                 android:text="What is your current health status ?" />
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="325dp"
+                android:layout_height="51dp"
                 android:layout_marginLeft="4dp"
                 android:orientation="horizontal">
 
@@ -360,32 +360,32 @@
 
                 <RadioGroup
                     android:id="@+id/q5"
-                    android:layout_width="172dp"
-                    android:layout_height="48dp"
+                    android:layout_width="146dp"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="0dp"
                     android:orientation="horizontal"
                     android:textAlignment="center">
 
                     <RadioButton
                         android:id="@+id/q5_1"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="27dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="1" />
 
                     <RadioButton
                         android:id="@+id/q5_2"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="28dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="2" />
 
                     <RadioButton
                         android:id="@+id/q5_3"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:checked="true"
@@ -393,8 +393,8 @@
 
                     <RadioButton
                         android:id="@+id/q5_4"
-                        android:layout_width="35dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="29dp"
+                        android:layout_height="match_parent"
                         android:layout_marginLeft="0dp"
                         android:buttonTint="#7A7777"
                         android:contentDescription="4" />
@@ -410,7 +410,7 @@
 
                 <TextView
                     style="@style/Widget.AppCompat.TextView.SpinnerItem"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="healthy" />
