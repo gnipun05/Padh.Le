@@ -126,26 +126,20 @@ public class FirstFragment extends Fragment {
                 }
             }
         });
-        return inflater.inflate(R.layout.fragment_first, container, false);
+        View v = inflater.inflate(R.layout.fragment_first, container, false);
 
-
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         listUpdate();
-        enter = getActivity().findViewById(R.id.enter);
+        enter = v.findViewById(R.id.enter);
 
         myList = new ArrayList<>();
-        predictedTime = getActivity().findViewById(R.id.predictedTime);
+        predictedTime = v.findViewById(R.id.predictedTime);
 
         setOnClickListener();
 
-        recyclerView = getActivity().findViewById(R.id.recyclerView);
+        recyclerView = v.findViewById(R.id.recyclerView);
         recyclerAdapter = new com.example.project.RecyclerAdapter(myList, listener);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(recyclerAdapter);
 
 //        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
@@ -175,7 +169,7 @@ public class FirstFragment extends Fragment {
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MainActivity2.class);
+                Intent intent = new Intent(requireContext(), MainActivity2.class);
                 startActivityForResult(intent, 1);
 //                listUpdate();
             }
@@ -183,6 +177,63 @@ public class FirstFragment extends Fragment {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
+        return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+//        listUpdate();
+//        enter = getActivity().findViewById(R.id.enter);
+//
+//        myList = new ArrayList<>();
+//        predictedTime = getActivity().findViewById(R.id.predictedTime);
+//
+//        setOnClickListener();
+//
+//        recyclerView = getActivity().findViewById(R.id.recyclerView);
+//        recyclerAdapter = new com.example.project.RecyclerAdapter(myList, listener);
+//
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        recyclerView.setAdapter(recyclerAdapter);
+//
+////        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+////        recyclerView.addItemDecoration(dividerItemDecoration);
+//
+//        recyclerView.setAlpha(0);
+//        recyclerView.setTranslationX(100);
+//        recyclerView.animate().alpha(1).translationXBy(-100).setDuration(1000);
+////        AlphaAnimation anim = new AlphaAnimation(0f, 1f);
+////        anim.setDuration(2000);
+////        recyclerView.startAnimation(anim);
+////        recyclerView.setLayoutAnimation((LayoutAnimationController) AnimationUtils.loadLayoutAnimation(recyclerView.getContext(), R.anim.layout_animation_fall_down));
+////        recyclerView.getAdapter().notifyDataSetChanged();
+////        recyclerView.scheduleLayoutAnimation();
+//        // call sync recycle view here
+//
+////        myList.add(new Task("Task 1", 1));
+////        myList.add(new Task("Task 2", 3));
+////        myList.add(new Task("Task 3", 1));
+////        myList.add(new Task("Task 4", 2));
+////        myList.add(new Task("Task 5", 1));
+////        myList.add(new Task("Task 6", 4));
+////        myList.add(new Task("Task 7", 2));
+////        myList.add(new Task("Task 8", 3));
+////        small=3; medium=2; big=2; very_big=1;
+//
+//        enter.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), MainActivity2.class);
+//                startActivityForResult(intent, 1);
+////                listUpdate();
+//            }
+//        });
+//
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+//        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     private void setOnClickListener() {
