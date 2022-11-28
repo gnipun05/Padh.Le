@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -17,6 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,11 +43,13 @@ public class FragmentSession extends Fragment {
 
     Button reload;
     Button back2;
+    FloatingActionButton endsession;
     TextView display_ID;
     MainActivity ob;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +58,7 @@ public class FragmentSession extends Fragment {
 
         ob = (MainActivity)getActivity();
         myList = new ArrayList<>();
-
+        reloadList();
         setOnClickListener();
         recyclerView = view.findViewById(R.id.listv);
         recyclerAdapter2 = new com.example.project.RecyclerAdapter2(myList, listener);
@@ -60,13 +68,14 @@ public class FragmentSession extends Fragment {
 
 //        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
 //        recyclerView.addItemDecoration(dividerItemDecoration);
-        reloadList();
+
 
 
         ob.frag_no = 2;
 
         reload = view.findViewById(R.id.reload);
         back2 = view.findViewById(R.id.back2);
+        endsession=view.findViewById(R.id.endsession);
         display_ID = view.findViewById(R.id.display_ID);
         display_ID.setText("Session ID: " + ob.ID);
 
@@ -76,6 +85,32 @@ public class FragmentSession extends Fragment {
                 Fragment beginPage = new FragmentBegin();
                 FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
                 fm.replace(R.id.container, beginPage).commit();
+            }
+        });
+        endsession.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.collection("sessions").document(ob.ID).collection("sessions").document(user.getUid())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("Deleted", "DocumentSnapshot successfully deleted!");
+                                reloadList();
+                                Fragment beginPage = new FragmentBegin();
+                                FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
+                                fm.replace(R.id.container, beginPage).commit();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("Deleted", "Error deleting document", e);
+                            }
+                        });
+//                Toast.makeText(getActivity(), "d", Toast.LENGTH_SHORT).show();
+                //remove from database
+
             }
         });
         reload.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +124,7 @@ public class FragmentSession extends Fragment {
 
     private void setOnClickListener() {
         listener = new RecyclerAdapter2.RecyclerViewClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v, int position) {
                 ob.UID = myList.get(position).Uid;
@@ -100,6 +136,7 @@ public class FragmentSession extends Fragment {
         };
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void reloadList(){
         db.collection("sessions").document(ob.ID).collection("sessions")
                 .get()
@@ -112,10 +149,6 @@ public class FragmentSession extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 DetailCard person = document.toObject(DetailCard.class);
                                 myList.add(person);
-//                                if(person.getName()!=null)
-//                                {
-                                Log.d("myList", person.getName().toString());
-//                                }
                             }
 //                            myList.add(new DetailCard("Nipun", "something@xyz.com", "myID"));
                             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
