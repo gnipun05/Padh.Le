@@ -242,6 +242,7 @@ public class FirstFragment extends Fragment {
             public void onClick(View v, int position) {
                 Intent intent = new Intent (getActivity(), MainActivity3.class);
                 Log.d("ma1", String.valueOf(myList.get(position).time));
+                intent.putExtra("title", myList.get(position).name);
                 intent.putExtra("time", myList.get(position).time);
                 intent.putExtra("pos", position);
                 intent.putExtra("uId", myList.get(position).uId);
