@@ -18,14 +18,13 @@ import android.widget.Toast;
 
 public class MainActivity3 extends AppCompatActivity {
     private Chronometer chronometer;
-    ImageButton btStart, btStop;
+    ImageButton btStart, btStop, button;
     private boolean isResume,isRunning,flg=false;
     Handler handler,handler2;
     long tMilliSec, tStart, tBuff, tUpdate = 0L;
     long sec=0, hrs=0, min=0, prev=0;
     int pos=0;
     String uId;
-    Button button;
     private ProgressBar progressBar;
     int i = 0;
     String sTime;
