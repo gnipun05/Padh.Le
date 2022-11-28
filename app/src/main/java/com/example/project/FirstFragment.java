@@ -523,9 +523,13 @@ public class FirstFragment extends Fragment {
                                         return params;
                                     }
                                 };
+                                try {
+                                    RequestQueue queue = Volley.newRequestQueue(getActivity());
+                                    queue.add(stringRequest);
 
-                                RequestQueue queue = Volley.newRequestQueue(getActivity());
-                                queue.add(stringRequest);
+                                }catch (Exception e){
+                                    Log.d("catch", "message: ");
+                                }
                             }
                         } else {
                             Log.d("TAG", "Error getting documents: ", task.getException());
