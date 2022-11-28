@@ -57,7 +57,7 @@ public class MainActivity3 extends AppCompatActivity {
             pos = extra.getInt("pos");
             uId=extra.getString("uId");
             Log.d("ma3", "onCreate: " + prev );
-            display_title.setText("Task: "+title);
+            display_title.setText(title);
         }
         sTime="00:00:00";
 
