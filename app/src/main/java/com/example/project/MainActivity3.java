@@ -2,6 +2,7 @@ package com.example.project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity3 extends AppCompatActivity {
     private Chronometer chronometer;
@@ -28,14 +31,20 @@ public class MainActivity3 extends AppCompatActivity {
     String sTime;
     long k,j=0;
     boolean flag=true;
-    boolean start_flag=false, five_flag=false, pause_flag=false;
+    boolean start_flag=false, five_flag=false, Mstart_flag=false;
+    TextView display_title;
+    String title;
 
     Intent intent=new Intent();
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-        // progressBar = findViewById(R.id.progress_bar);
+
+        display_title = findViewById(R.id.display_title);
+
+       // progressBar = findViewById(R.id.progress_bar);
         chronometer = findViewById(R.id.chronometer);
         btStart = findViewById(R.id.bt_start);
         btStop = findViewById(R.id.bt_stop);
@@ -45,10 +54,13 @@ public class MainActivity3 extends AppCompatActivity {
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             prev = extra.getLong("time");
+            title = extra.getString("title");
             pos = extra.getInt("pos");
             uId=extra.getString("uId");
             Log.d("ma3", "onCreate: " + prev );
+            display_title.setText("Task: "+title);
         }
+        sTime="00:00:00";
 
         if(prev>0){
             flg=true;
@@ -85,12 +97,13 @@ public class MainActivity3 extends AppCompatActivity {
             boolean temp = true;
             @Override
             public void onClick(View v) {
-                start_flag=true;
+                Mstart_flag=true;
                 //-----------------------------------------------------------------------
                 if (!isResume) {
 
                     isResume = true;
                     isRunning=true;
+                    start_flag=true;
                     handler.postDelayed(runnable, 0);
                     btStop.setVisibility(View.GONE);
                     btStart.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_pause_24));
@@ -98,6 +111,7 @@ public class MainActivity3 extends AppCompatActivity {
 
                     isRunning=false;
                     isResume = false;
+                    start_flag=false;
                     handler.removeCallbacks(runnable);
                     btStop.setVisibility(View.VISIBLE);
                     btStart.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
@@ -133,8 +147,7 @@ public class MainActivity3 extends AppCompatActivity {
                 flg=false;
             }
 
-            sec = tUpdate % 60;
-
+                sec = tUpdate % 60;
 
 
             sTime = String.format("%02d", (hrs+temp2)%60) + ":" + String.format("%02d", (min+temp)%60) + ":" + String.format("%02d", sec);
@@ -144,24 +157,18 @@ public class MainActivity3 extends AppCompatActivity {
     };
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("TAG", "onStop: ");
-        pause_flag=true;
-        my_func();
+    public void onBackPressed() {
+        if (start_flag)
+            Toast.makeText(this, "Please Stop the Timer", Toast.LENGTH_SHORT).show();
+        else {
+            my_func();
+            super.onBackPressed();
+        }
     }
 
     public void my_func(){
         if(!isResume){
-            if(pause_flag){
-                k = (tUpdate * 1000) + (j * 300000) + prev - prev % 60000;
-//                    time=String.valueOf(k );
-                intent.putExtra("position", pos);
-                intent.putExtra("uId", uId);
-                intent.putExtra("time", k);
-                intent.putExtra("sTime", sTime);
-            }
-            else if(start_flag) {
+            if(Mstart_flag) {
                 k = (tUpdate * 1000) + (j * 300000) + prev - prev % 60000;
 //                    time=String.valueOf(k );
                 intent.putExtra("position", pos);

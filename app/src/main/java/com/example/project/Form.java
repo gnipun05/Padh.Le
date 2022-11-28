@@ -131,7 +131,6 @@ public class Form extends AppCompatActivity {
                                     });
                             Toast.makeText(Form.this, data, Toast.LENGTH_SHORT).show();
                             Intent i=new Intent();
-//                            i.putExtra("category",result);
                             setResult(RESULT_OK, i);
                             finish();
                         } catch (JSONException e) {
