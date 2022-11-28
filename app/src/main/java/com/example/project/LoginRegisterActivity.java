@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.os.Build;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,9 +28,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 public class LoginRegisterActivity extends AppCompatActivity {
     int AUTHUI_REQ_CODE=10111;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,10 +74,31 @@ public class LoginRegisterActivity extends AppCompatActivity {
         if(requestCode==AUTHUI_REQ_CODE){
             if(resultCode==RESULT_OK){
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                Log.d("tag203","i m here"+user.getUid());
+
+//                DocumentReference docIdRef = db.collection("users").document();
+//                docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            DocumentSnapshot document = task.getResult();
+//                            Log.d("Tag202", String.valueOf(document.getData()));
+//                            if (document.exists()) {
+//                                Log.d("TAG202", "Document exists!");
+//                            } else {
+//                                Log.d("TAG202", "Document does not exist!");
+//                            }
+//                        } else {
+//                            Log.d("TAG", "Failed with: ", task.getException());
+//                        }
+//                    }
+//
+//                });
 //                DocumentReference docRef = db.collection("users").document(user.getUid());
 //                    docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
 //                        @Override
 //                        public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+//                            Log.d("myval",value.toString());
 //                            if (value.exists()) {
 //                                //update
 //                                Log.d("myuser","exists");
@@ -108,20 +137,46 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
 
 //                });
-//                OnCompleteListener<AuthResult> completeListener = new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            boolean isNewUser = task.getResult().getAdditionalUserInfo().isNewUser();
-//                            if (isNewUser) {
-//                                Log.d("TAG101", "Is New User!");
-//                            } else {
-//                                Log.d("TAG101", "Is Old User!");
-//                            }
-//                        }
-//                    }
+//                db.collection("users").document(user.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                            @Override
+//                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                                if(documentSnapshot.getId()==null)
+//                                    Log.d("bhavya","yep yep");
+//                                else
+//                                    Log.d("bhavya",documentSnapshot.getData().toString());
 //
-//                };
+//                            }
+//
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d("bhavya","boo yeah");
+//                    }
+//                });
+                db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document!=null) {
+                                Log.d("date28", "Document exists!");
+                                Intent i=new Intent(LoginRegisterActivity.this,Form.class);
+                                startActivity(i);
+
+
+//                                Log.d("CatTAG", "onActivityResult: " + category);
+//                                category = data.getStringExtra("category");
+
+                                finish();
+
+                            } else {
+                                Log.d("date28", "Document does not exist!");
+                            }
+                        } else {
+                            Log.d("date", "Failed with: ", task.getException());
+                        }
+                    }
+                });
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 this.finish();

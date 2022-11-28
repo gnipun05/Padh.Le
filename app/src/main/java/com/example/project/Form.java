@@ -1,6 +1,7 @@
 package com.example.project;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -21,6 +22,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +36,9 @@ import java.util.Map;
 
 public class Form extends AppCompatActivity {
 
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     EditText age;
     TextView age_field;
     RadioGroup gender, activities, freetime, goout, health;
@@ -99,10 +108,29 @@ public class Form extends AppCompatActivity {
                                     data = "";
                                     break;
                             }
+
+                            Log.d("TAG", "onCreate: ");
+                            Map<String, Object> details = new HashMap<>();
+                            details.put("Name", user.getDisplayName());
+                            details.put("Email", user.getEmail());
+                            details.put("Uid", user.getUid());
+                            details.put("Category", result);
+                            db.collection("users").document(user.getUid()).collection("Details").document(user.getUid())
+                                    .set(details)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.d("Firestore", "DocumentSnapshot successfully written!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w("Firestore", "Error writing document", e);
+                                        }
+                                    });
                             Toast.makeText(Form.this, data, Toast.LENGTH_SHORT).show();
                             Intent i=new Intent();
-                            i.putExtra("category",result);
-                            Log.d("tTAG", "onActivityResult: "+result);
                             setResult(RESULT_OK, i);
                             finish();
                         } catch (JSONException e) {
