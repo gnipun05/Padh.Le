@@ -148,6 +148,10 @@ public class FragmentSession extends Fragment {
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 DetailCard person = document.toObject(DetailCard.class);
+
+//                                Log.d("firebaseissue",user.getDisplayName());
+                                if(user.getDisplayName()==null)
+                                    person.setName("Bhavya Gupta");
                                 myList.add(person);
                             }
 //                            myList.add(new DetailCard("Nipun", "something@xyz.com", "myID"));
