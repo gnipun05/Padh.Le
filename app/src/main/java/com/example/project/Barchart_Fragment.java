@@ -99,7 +99,6 @@ public class Barchart_Fragment extends Fragment {
 
     private void drawBC(BarHelper bh) {
 
-
         barChart = view.findViewById(R.id.barChart);
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         ArrayList<String> xlabels = new ArrayList<>();
@@ -107,14 +106,6 @@ public class Barchart_Fragment extends Fragment {
         xlabels.add("Medium");
         xlabels.add("Big");
         xlabels.add("Very Big");
-
-
-//        for(int i = 0; i < xlabels.size(); i++){
-//            barEntries.add(new BarEntry(i, (i+1)*(i+1)));
-
-//        }
-
-
 
         Log.d("bh", String.valueOf(bh.getBig()));
         barEntries.add(new BarEntry(0, bh.getEasy()));
@@ -145,6 +136,5 @@ public class Barchart_Fragment extends Fragment {
         barChart.setData(barData);
         barChart.setExtraOffsets(35f, 35f, 35f, 35f);
         barChart.animateXY(0, 2000, Easing.EaseOutBack);
-
     }
 }

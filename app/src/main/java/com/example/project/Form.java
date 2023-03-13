@@ -45,7 +45,8 @@ public class Form extends AppCompatActivity {
     Button Continue;
     String Gender, Age, Activities, FreeTime, GoOut, Health;
 //    String url = "https://studytime-padhle.herokuapp.com/predict";
-    String url = "https://sahilsorte16.pythonanywhere.com/predict";
+//    String url = "https://sahilsorte16.pythonanywhere.com/predict";
+    String url = "https://category.pythonanywhere.com/predict";
     String result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

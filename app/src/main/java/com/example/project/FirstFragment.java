@@ -71,10 +71,6 @@ public class FirstFragment extends Fragment {
     List<Task> archivedTasks = new ArrayList<>();
     TextView predictedTime;
     LocalDate date = LocalDate.now();
-//    String today=date.toString();
-//    String exactDate=today.substring(date.getDayOfMonth());
-
-
 
     int small=0, big=0, medium=0, very_big=0;
     String url =  "https://cat1.pythonanywhere.com/predict";
@@ -148,36 +144,17 @@ public class FirstFragment extends Fragment {
         recyclerView.setAlpha(0);
         recyclerView.setTranslationX(100);
         recyclerView.animate().alpha(1).translationXBy(-100).setDuration(1000);
-//        AlphaAnimation anim = new AlphaAnimation(0f, 1f);
-//        anim.setDuration(2000);
-//        recyclerView.startAnimation(anim);
-//        recyclerView.setLayoutAnimation((LayoutAnimationController) AnimationUtils.loadLayoutAnimation(recyclerView.getContext(), R.anim.layout_animation_fall_down));
-//        recyclerView.getAdapter().notifyDataSetChanged();
-//        recyclerView.scheduleLayoutAnimation();
-        // call sync recycle view here
-
-//        myList.add(new Task("Task 1", 1));
-//        myList.add(new Task("Task 2", 3));
-//        myList.add(new Task("Task 3", 1));
-//        myList.add(new Task("Task 4", 2));
-//        myList.add(new Task("Task 5", 1));
-//        myList.add(new Task("Task 6", 4));
-//        myList.add(new Task("Task 7", 2));
-//        myList.add(new Task("Task 8", 3));
-//        small=3; medium=2; big=2; very_big=1;
 
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(requireContext(), MainActivity2.class);
                 startActivityForResult(intent, 1);
-//                listUpdate();
             }
         });
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
 
         return v;
     }
@@ -185,55 +162,6 @@ public class FirstFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        listUpdate();
-//        enter = getActivity().findViewById(R.id.enter);
-//
-//        myList = new ArrayList<>();
-//        predictedTime = getActivity().findViewById(R.id.predictedTime);
-//
-//        setOnClickListener();
-//
-//        recyclerView = getActivity().findViewById(R.id.recyclerView);
-//        recyclerAdapter = new com.example.project.RecyclerAdapter(myList, listener);
-//
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        recyclerView.setAdapter(recyclerAdapter);
-//
-////        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-////        recyclerView.addItemDecoration(dividerItemDecoration);
-//
-//        recyclerView.setAlpha(0);
-//        recyclerView.setTranslationX(100);
-//        recyclerView.animate().alpha(1).translationXBy(-100).setDuration(1000);
-////        AlphaAnimation anim = new AlphaAnimation(0f, 1f);
-////        anim.setDuration(2000);
-////        recyclerView.startAnimation(anim);
-////        recyclerView.setLayoutAnimation((LayoutAnimationController) AnimationUtils.loadLayoutAnimation(recyclerView.getContext(), R.anim.layout_animation_fall_down));
-////        recyclerView.getAdapter().notifyDataSetChanged();
-////        recyclerView.scheduleLayoutAnimation();
-//        // call sync recycle view here
-//
-////        myList.add(new Task("Task 1", 1));
-////        myList.add(new Task("Task 2", 3));
-////        myList.add(new Task("Task 3", 1));
-////        myList.add(new Task("Task 4", 2));
-////        myList.add(new Task("Task 5", 1));
-////        myList.add(new Task("Task 6", 4));
-////        myList.add(new Task("Task 7", 2));
-////        myList.add(new Task("Task 8", 3));
-////        small=3; medium=2; big=2; very_big=1;
-//
-//        enter.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), MainActivity2.class);
-//                startActivityForResult(intent, 1);
-////                listUpdate();
-//            }
-//        });
-//
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-//        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     private void setOnClickListener() {
@@ -449,24 +377,24 @@ public class FirstFragment extends Fragment {
                                 long b = 0;
                                 switch(cat){
                                     case "1":
-                                        url= "https://cat1.pythonanywhere.com/predict";
+                                        url= "https://catone.pythonanywhere.com/predict";
                                         b=-5;
                                         break;
                                     case "2":
-                                        url= "https://Category2.pythonanywhere.com/predict";
+                                        url= "https://cattwo.pythonanywhere.com/predict";
                                         b=-1;
                                         break;
                                     case "3":
-                                        url= "https://cat3.pythonanywhere.com/predict";
+                                        url= "https://catthree.pythonanywhere.com/predict";
                                         b=37;
                                         break;
                                     case "4":
-                                        url= "https://cat4.pythonanywhere.com/predict";
+                                        url= "https://catfour.pythonanywhere.com/predict";
                                         b=38;
                                         break;
                                     default:
                                         b=38;
-                                        url= "https://cat4.pythonanywhere.com/predict";
+                                        url= "https://catfour.pythonanywhere.com/predict";
 
                                 }
                                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,

@@ -64,81 +64,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frag_no = 1;
-//
-//        Log.d("tag203","i m here too");
-//        DocumentReference docRef2 = db.collection("users").document(user.getUid());
-//
-//        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//        @Override
-//        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//            if (task.isSuccessful()) {
-//                DocumentSnapshot document = task.getResult();
-//                if (document.exists()) {
-//                    Log.d("userInfo", "DocumentSnapshot data: " + document.getData());
-//
-//                } else {
-//                    Log.d("userInfo", "No such document");
-//                }
-//            }
-//        }
-//    });
-
-
-//
-//        db.collection("users").document(user.getUid()).collection("Tasks")
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//
-//                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                Log.d("tag203", String.valueOf(document.getData()));
-//                            }
-//
-//                        } else {
-//                            Log.d("tag203", "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-
-//        try{
-//
-//            db.collection("users").document(user.getUid()).collection("Details")
-//                    .get()
-//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
-//                            if (task.isSuccessful()) {
-//                                for (QueryDocumentSnapshot document : task.getResult()) {
-//                                    DetailCard dd=document.toObject(DetailCard.class);
-//                                    Log.d("tag205",dd.getUid());
-//                                } }else {
-//                                Log.d("TAG", "Error getting documents: ", task.getException());
-//                            }
-//
-//                        }});
-//
-//        } catch (Exception e) {
-//            Log.d("tag205","boo");
-//            e.printStackTrace();
-//        }
-
-
-//        tv=findViewById(R.id.textView);
-//        Handler handler = new Handler();
-//        Animation myanimation= AnimationUtils.loadAnimation(MainActivity.this,R.anim.textaniimation);
-//        tv.startAnimation(myanimation);
-//
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                Log.d("animate","1");
-//
-//            }
-//        }, Splash_timeout);   //5 seconds
-//
-
-        //firebase auth
         Log.d("animate","1");
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
@@ -146,13 +71,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             startActivity(i);
             finish();
         }
-        //firestore
-        ///////////////////////////  Form /////////////////////////
 
-        ///////////////////////////////////////////////
-
-
-        //navigation
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setItemHorizontalTranslationEnabled(true);
