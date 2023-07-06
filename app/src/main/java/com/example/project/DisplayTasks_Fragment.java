@@ -8,12 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,15 +53,14 @@ import java.util.Map;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class FirstFragment extends Fragment {
+public class DisplayTasks_Fragment extends Fragment {
 
     RecyclerView recyclerView;
     RecyclerAdapter recyclerAdapter;
-    FloatingActionButton enter;
-
     RecyclerAdapter.RecyclerViewClickListener listener;
-    List<Task> myList;
-    List<Task> archivedTasks = new ArrayList<>();
+
+    FloatingActionButton enter;
+    List<Task_Card> myList;
     TextView predictedTime;
     LocalDate date = LocalDate.now();
 
@@ -77,17 +69,13 @@ public class FirstFragment extends Fragment {
 
     FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    public FirstFragment(){
+    public DisplayTasks_Fragment(){
         // require a empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-//        Log.d("Today", String.valueOf(date.getDayOfWeek()));
-        listUpdate();
-//        Log.d("date",date.toString());
         Map<String, Object> mydate = new HashMap<>();
         mydate.put("completedTasks",0);
         db.collection("users").document(user.getUid()).collection("Completed").document(date.toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -98,10 +86,8 @@ public class FirstFragment extends Fragment {
                     if (document.exists()) {
                         Log.d("date", "Document exists!");
                     } else {
-                        Log.d("date", "Document does not exist!");
-
+                        Log.d("date", "Document does not exist!, so we are creating one");
                         //add to doc
-
                         db.collection("users").document(user.getUid()).collection("Completed").document(date.toString())
                                 .set(mydate)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -124,23 +110,27 @@ public class FirstFragment extends Fragment {
         });
         View v = inflater.inflate(R.layout.fragment_first, container, false);
 
-        listUpdate();
+        predictedTime = v.findViewById(R.id.predictedTime);
+        myList = new ArrayList<>();
+
         enter = v.findViewById(R.id.enter);
 
-        myList = new ArrayList<>();
-        predictedTime = v.findViewById(R.id.predictedTime);
+        listUpdate();
 
         setOnClickListener();
 
+        // initializing recyclerView to its XML component
         recyclerView = v.findViewById(R.id.recyclerView);
+        // adding the list of Tasks and listener(which tells which task has been clicked) to the Recycler Adapter
         recyclerAdapter = new com.example.project.RecyclerAdapter(myList, listener);
 
+        // using Linear Layout for our Recycler View
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        // To display the data in the RecyclerView, an adapter is required. The adapter acts as a bridge between the data set
+        // and the RecyclerView, providing the necessary views and data binding.
         recyclerView.setAdapter(recyclerAdapter);
 
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-//        recyclerView.addItemDecoration(dividerItemDecoration);
-
+        // Animation and UI
         recyclerView.setAlpha(0);
         recyclerView.setTranslationX(100);
         recyclerView.animate().alpha(1).translationXBy(-100).setDuration(1000);
@@ -148,11 +138,12 @@ public class FirstFragment extends Fragment {
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(requireContext(), MainActivity2.class);
+                Intent intent = new Intent(requireContext(), AddTask_Activity.class);
                 startActivityForResult(intent, 1);
             }
         });
 
+        // to implement the swipes, we have used ItemTouchHelper
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
@@ -168,8 +159,7 @@ public class FirstFragment extends Fragment {
         listener = new RecyclerAdapter.RecyclerViewClickListener() {
             @Override
             public void onClick(View v, int position) {
-                Intent intent = new Intent (getActivity(), MainActivity3.class);
-                Log.d("ma1", String.valueOf(myList.get(position).time));
+                Intent intent = new Intent (getActivity(), Stopwatch_Activity.class);
                 intent.putExtra("title", myList.get(position).name);
                 intent.putExtra("time", myList.get(position).time);
                 intent.putExtra("pos", position);
@@ -178,6 +168,7 @@ public class FirstFragment extends Fragment {
             }
         };
     }
+
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -186,7 +177,6 @@ public class FirstFragment extends Fragment {
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
             int position = viewHolder.getAdapterPosition();
             String name = myList.get(position).name;
             int id=myList.get(position).id;
@@ -194,57 +184,29 @@ public class FirstFragment extends Fragment {
             long time=myList.get(position).time;
             String sTime=myList.get(position).sTime;
             switch(direction){
+                // swipe left to delete the Task
                 case ItemTouchHelper.LEFT:
-
-                    // delete task from firestore
-
                     db.collection("users").document(user.getUid()).collection("Tasks").document(uId)
                             .delete();
                     listUpdate();
-//                    myList.remove(position);
-//                    recyclerAdapter.notifyItemRemoved(position);
-
-//                    removeTag(id);
-
                     Snackbar.make(recyclerView, "Deleted: " + name, Snackbar.LENGTH_LONG)
                             .setAction("Undo", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     // add the task back to firestore
-                                    firestoreUpdate(id,name,sTime,time,uId);
+                                    firestoreUpdate(id,name,sTime,time,uId); // user defined func
                                     listUpdate();
-//                                    myList.add(position, deleted);
-
-//                                    addTag(id);
-
-//                                    recyclerAdapter.notifyItemInserted(position);
                                 }
                             }).show();
                     break;
-
+                // swipe right to complete the task
                 case ItemTouchHelper.RIGHT:
-//                    Task task = myList.get(position);
-//                    String taskName = task.name;
-//                    archivedTasks.add(task);
-//                    int id2=myList.get(position).id;
-//                    myList.remove(position);
-//                    recyclerAdapter.notifyItemRemoved(position);
                     db.collection("users").document(user.getUid()).collection("Tasks").document(uId)
                             .update("completed", true);
+                    // updating number of tasks a user has completed on that day (and not the day of creation of task)
                     db.collection("users").document(user.getUid()).collection("Completed").document(date.toString())
                             .update("completedTasks", FieldValue.increment(1));
-                    Log.d("complete","1");
-
-                    //update completed field
-
-
-
-
-//                    db.collection("users").document(user.getUid()).collection("Completed").document(uId)
-//                            .update(today, );
-
                     listUpdate();
-//                    removeTag(id2);
 
                     Snackbar.make(recyclerView, "Completed: " + name, Snackbar.LENGTH_LONG)
                             .setAction( "UNDO", new View.OnClickListener() {
@@ -252,22 +214,18 @@ public class FirstFragment extends Fragment {
                                 public void onClick(View v) {
                                     db.collection("users").document(user.getUid()).collection("Tasks").document(uId)
                                             .update("completed", false);
-                                    //update completed field
                                     db.collection("users").document(user.getUid()).collection("Completed").document(date.toString())
                                             .update("completedTasks", FieldValue.increment(-1));
                                     listUpdate();
                                 }
                             }).show();
                     break;
-
-                // call sync recycle view here
-
             }
         }
 
+        // UI for RecyclerView
         @Override
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-
             // copy paste it from: https://github.com/xabaras/RecyclerViewSwipeDecorator
             new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                     .addSwipeLeftBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorAccent))
@@ -280,10 +238,9 @@ public class FirstFragment extends Fragment {
                     .decorate();
 
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-
-            // call sync recycle view here
         }
     };
+
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -291,57 +248,35 @@ public class FirstFragment extends Fragment {
         if(requestCode==1 && resultCode==getActivity().RESULT_OK){
             String name=data.getStringExtra("a");
             int id=data.getIntExtra("b",0);
-
             firestoreUpdate(id,name,"00:00:00",0,"NULL");
-
             listUpdate();
-//            addTag(id);
-
-//            myList.add(new Task(name, id));
-
-            // to update the list
-//            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//            recyclerView.setAdapter(recyclerAdapter);
-
-
-            // call sync recycle view here
         }
         // this function gets the time spent on a task
         if(requestCode==2 && resultCode==getActivity().RESULT_OK){
-            int position=data.getIntExtra("position", 0);
             //update time here
             String uId=data.getStringExtra("uId");
             long time=data.getLongExtra("time",0);
-            Log.d("ma2", String.valueOf(time));
             String sTime=data.getStringExtra("sTime");
             db.collection("users").document(user.getUid()).collection("Tasks").document(uId)
                     .update(
                             "time", time,
                             "sTime",sTime
-
                     );
             listUpdate();
-//            myList.get(position).sTime=data.getStringExtra("sTime");
-//
-//            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//            recyclerView.setAdapter(recyclerAdapter);
-
-            // call sync recycle view here
         }
     }
 
     /////////////////////////Helper functions///////////////////////////////////////////
 
+    // function to convert time in milliseconds to Time String Format
     String calcSTime(long time){
         String sTime ="";
         long sec=time/1000,min=0,hr=0;
-        if(sec>=60)
-        {
+        if(sec>=60){
             min=sec/60;
             sec=sec%60;
         }
-        if(min>=60)
-        {
+        if(min>=60){
             hr=min/60;
             min=min%60;
         }
@@ -358,114 +293,106 @@ public class FirstFragment extends Fragment {
         Log.d("TAG", "calcSTime: " + sTime);
         return sTime;
     }
+
+    // funciton to predict the time
+    // it is fetching the category of the User and then predicting time based on the Category
     public void Predict() {
-//        tagUpdate();
-
-
         db.collection("users").document(user.getUid()).collection("Details")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Detail_Card dd=document.toObject(Detail_Card.class);
+                        String cat=dd.getCategory();
+                        long b = 0;
+                        switch(cat){
+                            case "1":
+                                url= "https://catone.pythonanywhere.com/predict";
+                                b=-5;
+                                break;
+                            case "2":
+                                url= "https://cattwo.pythonanywhere.com/predict";
+                                b=-1;
+                                break;
+                            case "3":
+                                url= "https://catthree.pythonanywhere.com/predict";
+                                b=37;
+                                break;
+                            case "4":
+                                url= "https://catfour.pythonanywhere.com/predict";
+                                b=38;
+                                break;
+                            default:
+                                b=38;
+                                url= "https://catfour.pythonanywhere.com/predict";
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
+                        }
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        String data = String.valueOf(jsonObject.getInt("time"));
 
-                                DetailCard dd=document.toObject(DetailCard.class);
-                                Log.d("firebasecate",dd.getCategory());
-                                String cat=dd.getCategory();
-                                long b = 0;
-                                switch(cat){
-                                    case "1":
-                                        url= "https://catone.pythonanywhere.com/predict";
-                                        b=-5;
-                                        break;
-                                    case "2":
-                                        url= "https://cattwo.pythonanywhere.com/predict";
-                                        b=-1;
-                                        break;
-                                    case "3":
-                                        url= "https://catthree.pythonanywhere.com/predict";
-                                        b=37;
-                                        break;
-                                    case "4":
-                                        url= "https://catfour.pythonanywhere.com/predict";
-                                        b=38;
-                                        break;
-                                    default:
-                                        b=38;
-                                        url= "https://catfour.pythonanywhere.com/predict";
-
-                                }
-                                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                                        new Response.Listener<String>() {
-                                            @Override
-                                            public void onResponse(String response) {
-                                                try {
-                                                    JSONObject jsonObject = new JSONObject(response);
-                                                    String data = String.valueOf(jsonObject.getInt("time"));
-
-                                                    long b = 0;
-                                                    switch(cat){
-                                                        case "1":
-                                                            b=-5;
-                                                            break;
-                                                        case "2":
-                                                            b=-1;
-                                                            break;
-                                                        case "3":
-                                                            b=37;
-                                                            break;
-                                                        case "4":
-                                                            b=38;
-                                                            break;
-                                                        default:
-                                                            b=38;
-
-                                                    }
-                                                    long time = Integer.parseInt(data)-b;
-                                                    data = calcSTime(time*60*1000);
-                                                    predictedTime.setText(data);
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        },
-                                        new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                Toast.makeText(getActivity(), "Connection error", Toast.LENGTH_LONG).show();
-                                            }
-
-                                        }){
-
-                                    @Override
-                                    protected Map<String, String> getParams(){
-                                        // update tag details
-
-                                        Map<String,String> params = new HashMap<String,String>();
-                                        params.put("small", String.valueOf(small));
-                                        params.put("medium", String.valueOf(medium));
-                                        params.put("big", String.valueOf(big));
-                                        params.put("very_big", String.valueOf(very_big));
-                                        return params;
+                                        long b = 0;
+                                        switch(cat){
+                                            case "1":
+                                                b=-5;
+                                                break;
+                                            case "2":
+                                                b=-1;
+                                                break;
+                                            case "3":
+                                                b=37;
+                                                break;
+                                            case "4":
+                                                b=38;
+                                                break;
+                                            default:
+                                                b=38;
+                                        }
+                                        long time = Integer.parseInt(data)-b;
+                                        data = calcSTime(time*60*1000);
+                                        predictedTime.setText(data);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                };
-                                try {
-                                    RequestQueue queue = Volley.newRequestQueue(getActivity());
-                                    queue.add(stringRequest);
-
-                                }catch (Exception e){
-                                    Log.d("catch", "message: ");
                                 }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(getActivity(), "Connection error", Toast.LENGTH_LONG).show();
+                                }
+                            }){
+
+                            @Override
+                            protected Map<String, String> getParams(){
+                                Map<String,String> params = new HashMap<String,String>();
+                                params.put("small", String.valueOf(small));
+                                params.put("medium", String.valueOf(medium));
+                                params.put("big", String.valueOf(big));
+                                params.put("very_big", String.valueOf(very_big));
+                                return params;
                             }
-                        } else {
-                            Log.d("TAG", "Error getting documents: ", task.getException());
+                        };
+                        try {
+                            RequestQueue queue = Volley.newRequestQueue(getActivity());
+                            queue.add(stringRequest);
+                        }catch (Exception e){
+                            Log.d("catch", "message: ");
                         }
                     }
-                });
-
+                } else {
+                    Log.d("TAG", "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
+
     public void addTag(int id){
         switch(id){
             case 1:
@@ -481,10 +408,11 @@ public class FirstFragment extends Fragment {
                 very_big++;
                 break;
         }
-//        Predict();
     }
+
+    // to add the Task in Firestore
     private void firestoreUpdate(int id,String name,String sTime,long time,String uId) {
-        //firestore
+        // adding the Task to the Firestore
         Map<String,Object> taskDetail=new HashMap<>();
         taskDetail.put("name",name);
         taskDetail.put("id",id);
@@ -492,63 +420,48 @@ public class FirstFragment extends Fragment {
         taskDetail.put("completed",false);
         taskDetail.put("sTime",sTime);
         taskDetail.put("date", LocalDate.now().toString());
+        // when we UNDO a task, uID!=NULL
         if(uId!="NULL") {
             taskDetail.put("uId",uId);
             db.collection("users").document(user.getUid()).collection("Tasks").document(uId).set(taskDetail, SetOptions.merge());
         }
+        // when data is being added for the first time, uId == NULL
         else {
             DocumentReference docref = db.collection("users").document(user.getUid()).collection("Tasks").document();
             taskDetail.put("uId", docref.getId());
             db.collection("users").document(user.getUid()).collection("Tasks").document(docref.getId()).set(taskDetail, SetOptions.merge());
         }
     }
+
+    // listUpdate is to bring the tasks from db who are not completed (completed==false)
     private void listUpdate() {
         db.collection("users").document(user.getUid()).collection("Tasks")
-                .whereEqualTo("completed", false)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            myList.clear();
-                            small=0;
-                            big=0;
-                            medium=0;
-                            very_big=0;
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Task tt=document.toObject(Task.class);
-                                Log.d("firebase",tt.getName());
+            .whereEqualTo("completed", false)
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    myList.clear();
+                    small=0;
+                    big=0;
+                    medium=0;
+                    very_big=0;
+                    // we are bringing all the documents of "Tasks" where completed == true
+                    // and then we are converting it to the Object
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Task_Card tt=document.toObject(Task_Card.class);
 
-                                myList.add(tt);
-                                addTag(tt.getId());
-
-                            }
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                            recyclerView.setAdapter(recyclerAdapter);
-                            Predict();
-
-                        } else {
-                            Log.d("TAG", "Error getting documents: ", task.getException());
-                        }
+                        myList.add(tt);
+                        addTag(tt.getId());
                     }
-                });
-
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recyclerView.setAdapter(recyclerAdapter);
+                    Predict();
+                } else {
+                    Log.d("TAG", "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
-//    public void removeTag(int id){
-//        switch(id){
-//            case 1:
-//                small--;
-//                break;
-//            case 2:
-//                medium--;
-//                break;
-//            case 3:
-//                big--;
-//                break;
-//            case 4:
-//                very_big--;
-//                break;
-//        }
-//        Predict();
-//    }
 }
