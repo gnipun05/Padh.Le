@@ -44,16 +44,19 @@ public class LoginRegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
+        // If user is already logged in, we go back to the MainActivity
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
             this.finish();
         }
 
+        // in provider we only added Google Builder for Google Authentication
         List<AuthUI.IdpConfig> provider = Arrays.asList(
                 new AuthUI.IdpConfig.GoogleBuilder().build()
         );
 
+        // calling google for Authentication
         Intent intent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
                 .setAvailableProviders(provider)
@@ -61,7 +64,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 .setAlwaysShowSignInMethodScreen(true)
                 .build();
         startActivityForResult(intent, AUTHUI_REQ_CODE);
-
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -70,7 +72,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
         if(requestCode==AUTHUI_REQ_CODE){
             if(resultCode==RESULT_OK){
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Log.d("tag203","i m here"+user.getUid());
 
                 db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -78,14 +79,14 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document!=null) {
-                                Log.d("date28", "Document not exists!");
+                                Log.d("date28", "Document exists!");
                                 Intent i=new Intent(LoginRegisterActivity.this,Form.class);
                                 startActivity(i);
 
                                 finish();
 
                             } else {
-                                Log.d("date28", "Document exist!");
+                                Log.d("date28", "Document not exist!");
                             }
                         } else {
                             Log.d("date", "Failed with: ", task.getException());
@@ -97,12 +98,12 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 this.finish();
             }
             else{
+                // may be we should add the above intent here as well to go to MainActivity
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 if(response == null)
                     Log.d("LoginActivity", "Login is cancelled by the user" );
                 else
                     Log.e("LoginActivity", "Error: ", response.getError() );
-
             }
         }
     }
